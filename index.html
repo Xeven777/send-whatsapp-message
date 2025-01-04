@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Messenger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-100 text-green-900 h-screen flex flex-col items-center justify-center">
+    <div class="bg-green-50 p-10 rounded-lg shadow-lg w-1/2">
+        <h1 class="text-3xl font-bold mb-4 text-green-800">WhatsApp Messenger</h1>
+        <input type="tel" id="phone-number" class="bg-green-200 p-2 rounded-lg w-full mb-4" placeholder="Enter phone number" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <textarea id="message" class="bg-green-200 p-2 rounded-lg w-full mb-4" placeholder="Enter your message"></textarea>
+        <button id="send-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg" onclick="sendMessage()">Send Message</button>
+        <p id="error-message" class="text-red-500 text-sm mt-2"></p>
+    </div>
+    <footer class="bg-green-50 p-4 fixed bottom-0 left-0 right-0 text-center text-green-800">
+        Made by Anish & Groq
+    </footer>
+
+    <script>
+        function sendMessage() {
+            const phoneNumber = document.getElementById('phone-number').value;
+            const message = document.getElementById('message').value;
+            const errorMessage = document.getElementById('error-message');
+            if (phoneNumber.length >= 7) {
+                const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+                errorMessage.textContent = '';
+            } else {
+                errorMessage.textContent = 'Please enter a phone number with at least 7 digits';
+            }
+        }
+    </script>
+</body>
+</html>
