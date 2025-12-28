@@ -15,8 +15,13 @@
                             primary: '#128C7E',
                             secondary: '#25D366',
                             dark: '#075E54',
-                            light: '#ECE5DD'
+                            light: '#ECE5DD',
+                            message: '#DCF8C6'
                         }
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
                     }
                 }
             }
@@ -25,120 +30,222 @@
 </head>
 <body class="bg-whatsapp-light min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-whatsapp-primary text-white p-4 shadow-md flex items-center">
+    <header class="bg-whatsapp-primary text-white p-4 shadow-md flex items-center justify-between">
         <div class="flex items-center">
             <i class="fab fa-whatsapp text-3xl mr-2"></i>
-            <h1 class="text-2xl font-bold">WhatsApp Messenger</h1>
+            <h1 class="text-2xl font-bold">WhatsApp Link Generator</h1>
         </div>
+        <button id="theme-toggle" class="text-white hover:text-yellow-200 transition duration-200">
+            <i class="fas fa-moon"></i>
+        </button>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow flex items-center justify-center p-4">
-        <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-2xl">
+    <main class="flex-grow flex items-center justify-center p-4 pt-0">
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-2xl space-y-5">
             <div class="text-center mb-6">
                 <i class="fab fa-whatsapp text-6xl text-whatsapp-primary mb-3"></i>
                 <h2 class="text-2xl md:text-3xl font-bold text-whatsapp-dark">Send a WhatsApp Message</h2>
                 <p class="text-gray-600 mt-2">Reach out to anyone, anywhere in the world</p>
             </div>
             
-            <div class="space-y-5">
-                <!-- Phone Number Input -->
+            <!-- Phone Number Input -->
+            <div class="relative">
+                <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <div class="flex">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                    <input 
+                        type="tel" 
+                        id="phone-number" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150"
+                        placeholder="e.g. 1234567890" 
+                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); validatePhone();"
+                        onfocus="showCountryHelper()"
+                    >
+                </div>
+                <p id="phone-hint" class="text-xs text-gray-500 mt-1 ml-1">Enter full international number (without +)</p>
+                <p id="phone-error" class="text-xs text-red-500 mt-1 ml-1 hidden"></p>
+            </div>
+            
+            <!-- Country Helper Dropdown -->
+            <div id="country-helper" class="hidden bg-white border border-gray-300 rounded-lg shadow-lg p-3 absolute z-10 w-64 mt-1 max-h-60 overflow-y-auto">
+                <p class="text-sm font-medium text-gray-700 mb-2">Popular Countries</p>
+                <div class="space-y-1">
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="1">United States (+1)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="44">United Kingdom (+44)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="91">India (+91)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="86">China (+86)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="81">Japan (+81)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="7">Russia (+7)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="49">Germany (+49)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="33">France (+33)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="82">South Korea (+82)</div>
+                    <div class="country-item cursor-pointer p-2 hover:bg-gray-100 rounded text-sm" data-code="55">Brazil (+55)</div>
+                </div>
+            </div>
+            
+            <!-- Message Input -->
+            <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
                 <div class="relative">
-                    <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <div class="flex">
-                        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
-                            <i class="fas fa-phone"></i>
-                        </span>
-                        <input 
-                            type="tel" 
-                            id="phone-number" 
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150"
-                            placeholder="e.g. 1234567890" 
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        >
-                    </div>
-                    <p id="phone-hint" class="text-xs text-gray-500 mt-1 ml-1">Enter full international number (without +)</p>
-                </div>
-                
-                <!-- Message Input -->
-                <div>
-                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
-                    <div class="flex">
-                        <textarea 
-                            id="message" 
-                            rows="4" 
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150"
-                            placeholder="Type your message here... (Press Shift+Enter for new line)"></textarea>
-                    </div>
-                </div>
-                
-                <!-- Quick Message Presets -->
-                <div>
-                    <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Messages</h3>
-                    <div id="preset-buttons" class="flex flex-wrap gap-2">
-                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
-                            Hello!
-                        </button>
-                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
-                            How are you?
-                        </button>
-                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
-                            Thank you!
-                        </button>
-                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
-                            I'll get back to you
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3 mt-6">
-                    <button 
-                        id="send-button" 
-                        class="flex-1 bg-whatsapp-primary hover:bg-whatsapp-dark text-white font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
-                        onclick="sendMessage()">
-                        <i class="fas fa-paper-plane mr-2"></i> Send Message
-                    </button>
-                    <button 
-                        id="copy-link-button" 
-                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
-                        onclick="copyLink()">
-                        <i class="fas fa-link mr-2"></i> Copy Link
+                    <textarea 
+                        id="message" 
+                        rows="4" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150 pr-10"
+                        placeholder="Type your message here... (Press Shift+Enter for new line)"></textarea>
+                    <button id="clear-text" class="absolute right-2 top-2 text-gray-400 hover:text-gray-600" onclick="document.getElementById('message').value = ''">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
-                <!-- Error Message -->
-                <p id="error-message" class="text-red-500 text-sm mt-2 text-center"></p>
-                <p id="success-message" class="text-green-600 text-sm mt-2 text-center"></p>
+                <div class="flex justify-between mt-1">
+                    <span id="char-count" class="text-xs text-gray-500">0/1000</span>
+                    <button id="emoji-button" class="text-xs text-gray-500 hover:text-whatsapp-primary">Add Emoji</button>
+                </div>
+            </div>
+            
+            <!-- Quick Message Presets -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <i class="fas fa-bolt text-yellow-500 mr-1"></i> Quick Messages
+                </h3>
+                <div id="preset-buttons" class="flex flex-wrap gap-2">
+                    <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                        Hello!
+                    </button>
+                    <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                        How are you?
+                    </button>
+                    <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                        Thank you!
+                    </button>
+                    <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                        I'll get back to you
+                    </button>
+                    <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                        Meeting reminder
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                <button 
+                    id="send-button" 
+                    class="flex-1 bg-whatsapp-primary hover:bg-whatsapp-dark text-white font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
+                    onclick="sendMessage()">
+                    <i class="fas fa-paper-plane mr-2"></i> Send Message
+                </button>
+                <button 
+                    id="copy-link-button" 
+                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
+                    onclick="copyLink()">
+                    <i class="fas fa-link mr-2"></i> Copy Link
+                </button>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="bg-whatsapp-primary text-white p-4 text-center text-sm">
-        <p>Made with <i class="fas fa-heart text-red-500"></i> by Anish</p>
+        <p>Made with <i class="fas fa-heart text-red-500"></i> by Anish & Groq</p>
     </footer>
 
+    <!-- Floating Notification -->
+    <div id="notification" class="hidden fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center z-50 animate-pulse-slow">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span id="notification-message">Link copied successfully!</span>
+    </div>
+
     <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        let darkMode = false;
+        
+        themeToggle.addEventListener('click', () => {
+            darkMode = !darkMode;
+            if (darkMode) {
+                body.classList.remove('bg-whatsapp-light');
+                body.classList.add('bg-gray-900');
+                document.querySelectorAll('.bg-white').forEach(el => {
+                    el.classList.remove('bg-white');
+                    el.classList.add('bg-gray-800');
+                });
+                document.querySelectorAll('.bg-gray-50').forEach(el => {
+                    el.classList.remove('bg-gray-50');
+                    el.classList.add('bg-gray-700');
+                });
+                document.querySelectorAll('.text-gray-900').forEach(el => {
+                    el.classList.remove('text-gray-900');
+                    el.classList.add('text-gray-100');
+                });
+                document.querySelectorAll('.text-gray-700').forEach(el => {
+                    el.classList.remove('text-gray-700');
+                    el.classList.add('text-gray-300');
+                });
+                document.querySelectorAll('.border-gray-300').forEach(el => {
+                    el.classList.remove('border-gray-300');
+                    el.classList.add('border-gray-600');
+                });
+                document.querySelectorAll('.bg-gray-200').forEach(el => {
+                    el.classList.remove('bg-gray-200');
+                    el.classList.add('bg-gray-600');
+                });
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('bg-gray-900');
+                body.classList.add('bg-whatsapp-light');
+                document.querySelectorAll('.bg-gray-800').forEach(el => {
+                    el.classList.remove('bg-gray-800');
+                    el.classList.add('bg-white');
+                });
+                document.querySelectorAll('.bg-gray-700').forEach(el => {
+                    el.classList.remove('bg-gray-700');
+                    el.classList.add('bg-gray-50');
+                });
+                document.querySelectorAll('.text-gray-100').forEach(el => {
+                    el.classList.remove('text-gray-100');
+                    el.classList.add('text-gray-900');
+                });
+                document.querySelectorAll('.text-gray-300').forEach(el => {
+                    el.classList.remove('text-gray-300');
+                    el.classList.add('text-gray-700');
+                });
+                document.querySelectorAll('.border-gray-600').forEach(el => {
+                    el.classList.remove('border-gray-600');
+                    el.classList.add('border-gray-300');
+                });
+                document.querySelectorAll('.bg-gray-600').forEach(el => {
+                    el.classList.remove('bg-gray-600');
+                    el.classList.add('bg-gray-200');
+                });
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+        
         // Function to send WhatsApp message
         function sendMessage() {
             const phoneNumber = document.getElementById('phone-number').value.trim();
             const message = document.getElementById('message').value.trim();
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('phone-error');
+            const successMessage = document.getElementById('phone-hint');
             
             // Reset messages
-            errorMessage.textContent = '';
-            successMessage.textContent = '';
+            errorMessage.classList.add('hidden');
+            successMessage.textContent = 'Enter full international number (without +)';
             
             // Validate phone number
             if (phoneNumber.length === 0) {
                 errorMessage.textContent = 'Please enter a phone number';
+                errorMessage.classList.remove('hidden');
                 return;
             }
             
             if (phoneNumber.length < 7) {
                 errorMessage.textContent = 'Phone number must be at least 7 digits';
+                errorMessage.classList.remove('hidden');
                 return;
             }
             
@@ -150,10 +257,14 @@
             
             // Show success message
             successMessage.textContent = 'Opening WhatsApp...';
+            successMessage.classList.add('text-green-600');
+            successMessage.classList.remove('text-gray-500');
             
-            // Clear success message after 3 seconds
+            // Reset success message after 3 seconds
             setTimeout(() => {
-                successMessage.textContent = '';
+                successMessage.textContent = 'Enter full international number (without +)';
+                successMessage.classList.remove('text-green-600');
+                successMessage.classList.add('text-gray-500');
             }, 3000);
         }
         
@@ -161,21 +272,23 @@
         function copyLink() {
             const phoneNumber = document.getElementById('phone-number').value.trim();
             const message = document.getElementById('message').value.trim();
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('phone-error');
+            const successMessage = document.getElementById('phone-hint');
             
             // Reset messages
-            errorMessage.textContent = '';
-            successMessage.textContent = '';
+            errorMessage.classList.add('hidden');
+            successMessage.textContent = 'Enter full international number (without +)';
             
             // Validate phone number
             if (phoneNumber.length === 0) {
                 errorMessage.textContent = 'Please enter a phone number';
+                errorMessage.classList.remove('hidden');
                 return;
             }
             
             if (phoneNumber.length < 7) {
                 errorMessage.textContent = 'Phone number must be at least 7 digits';
+                errorMessage.classList.remove('hidden');
                 return;
             }
             
@@ -184,14 +297,19 @@
             
             // Copy to clipboard
             navigator.clipboard.writeText(url).then(() => {
-                successMessage.textContent = 'Link copied to clipboard!';
+                // Show notification
+                const notification = document.getElementById('notification');
+                const notificationMessage = document.getElementById('notification-message');
+                notificationMessage.textContent = 'Link copied to clipboard!';
+                notification.classList.remove('hidden');
                 
-                // Clear success message after 3 seconds
+                // Hide notification after 3 seconds
                 setTimeout(() => {
-                    successMessage.textContent = '';
+                    notification.classList.add('hidden');
                 }, 3000);
             }).catch(err => {
                 errorMessage.textContent = 'Failed to copy link';
+                errorMessage.classList.remove('hidden');
                 console.error('Error copying text: ', err);
             });
         }
@@ -214,13 +332,89 @@
             }
         });
         
-        // Add keyboard support for sending message (Ctrl+Enter)
+        // Add keyboard support for sending message
         document.getElementById('message').addEventListener('keydown', function(e) {
-            // Shift+Enter for new line, Ctrl+Enter for sending
+            // Shift+Enter for new line, Enter for sending
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
+        });
+        
+        // Update character count
+        document.getElementById('message').addEventListener('input', function() {
+            const charCount = this.value.length;
+            document.getElementById('char-count').textContent = `${charCount}/1000`;
+            
+            // Change color when approaching limit
+            if (charCount > 900) {
+                document.getElementById('char-count').classList.add('text-orange-500');
+            } else {
+                document.getElementById('char-count').classList.remove('text-orange-500');
+            }
+            
+            // Change color when over limit
+            if (charCount > 1000) {
+                document.getElementById('char-count').classList.add('text-red-500');
+                this.value = this.value.substring(0, 1000);
+                document.getElementById('char-count').textContent = "1000/1000";
+            } else {
+                document.getElementById('char-count').classList.remove('text-red-500');
+            }
+        });
+        
+        // Validate phone number
+        function validatePhone() {
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const errorMessage = document.getElementById('phone-error');
+            const successMessage = document.getElementById('phone-hint');
+            
+            if (phoneNumber.length >= 7) {
+                errorMessage.classList.add('hidden');
+                successMessage.textContent = 'Valid phone number';
+                successMessage.classList.remove('text-gray-500');
+                successMessage.classList.add('text-green-600');
+            } else if (phoneNumber.length > 0) {
+                successMessage.textContent = 'Enter full international number (without +)';
+                successMessage.classList.remove('text-green-600');
+                successMessage.classList.add('text-gray-500');
+            }
+        }
+        
+        // Country helper functionality
+        function showCountryHelper() {
+            const countryHelper = document.getElementById('country-helper');
+            countryHelper.classList.remove('hidden');
+        }
+        
+        // Add event listeners for country items
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('country-item')) {
+                const phoneInput = document.getElementById('phone-number');
+                phoneInput.value = e.target.getAttribute('data-code');
+                phoneInput.focus();
+                document.getElementById('country-helper').classList.add('hidden');
+                validatePhone();
+            }
+        });
+        
+        // Hide country helper when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            const countryHelper = document.getElementById('country-helper');
+            const phoneInput = document.getElementById('phone-number');
+            
+            if (!countryHelper.contains(e.target) && e.target !== phoneInput) {
+                countryHelper.classList.add('hidden');
+            }
+        });
+        
+        // Add emoji functionality
+        document.getElementById('emoji-button').addEventListener('click', function() {
+            const emojis = ['😊', '😂', '❤️', '👍', '🙏', '🎉', '✅', '✔️', '🔥', '🚀'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const messageInput = document.getElementById('message');
+            messageInput.value += randomEmoji;
+            messageInput.focus();
         });
     </script>
 </body>
