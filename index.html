@@ -5,32 +5,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Messenger</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        whatsapp: {
+                            primary: '#128C7E',
+                            secondary: '#25D366',
+                            dark: '#075E54',
+                            light: '#ECE5DD'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-green-100 text-green-900 h-screen flex flex-col items-center justify-center">
-    <div class="bg-green-50 p-10 rounded-lg shadow-lg w-1/2">
-        <h1 class="text-3xl font-bold mb-4 text-green-800">WhatsApp Messenger</h1>
-        <input type="tel" id="phone-number" class="bg-green-200 p-2 rounded-lg w-full mb-4" placeholder="Enter phone number" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-        <textarea id="message" class="bg-green-200 p-2 rounded-lg w-full mb-4" placeholder="Enter your message"></textarea>
-        <button id="send-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg" onclick="sendMessage()">Send Message</button>
-        <p id="error-message" class="text-red-500 text-sm mt-2"></p>
-    </div>
-    <footer class="bg-green-50 p-4 fixed bottom-0 left-0 right-0 text-center text-green-800">
-        Made by Anish & Groq
+<body class="bg-whatsapp-light min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-whatsapp-primary text-white p-4 shadow-md flex items-center">
+        <div class="flex items-center">
+            <i class="fab fa-whatsapp text-3xl mr-2"></i>
+            <h1 class="text-2xl font-bold">WhatsApp Messenger</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="text-center mb-6">
+                <i class="fab fa-whatsapp text-6xl text-whatsapp-primary mb-3"></i>
+                <h2 class="text-2xl md:text-3xl font-bold text-whatsapp-dark">Send a WhatsApp Message</h2>
+                <p class="text-gray-600 mt-2">Reach out to anyone, anywhere in the world</p>
+            </div>
+            
+            <div class="space-y-5">
+                <!-- Phone Number Input -->
+                <div class="relative">
+                    <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <div class="flex">
+                        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+                            <i class="fas fa-phone"></i>
+                        </span>
+                        <input 
+                            type="tel" 
+                            id="phone-number" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150"
+                            placeholder="e.g. 1234567890" 
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        >
+                    </div>
+                    <p id="phone-hint" class="text-xs text-gray-500 mt-1 ml-1">Enter full international number (without +)</p>
+                </div>
+                
+                <!-- Message Input -->
+                <div>
+                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
+                    <div class="flex">
+                        <textarea 
+                            id="message" 
+                            rows="4" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-whatsapp-primary focus:border-whatsapp-primary block w-full p-3 transition duration-150"
+                            placeholder="Type your message here... (Press Shift+Enter for new line)"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Quick Message Presets -->
+                <div>
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Messages</h3>
+                    <div id="preset-buttons" class="flex flex-wrap gap-2">
+                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                            Hello!
+                        </button>
+                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                            How are you?
+                        </button>
+                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                            Thank you!
+                        </button>
+                        <button type="button" class="preset-btn text-xs bg-gray-100 hover:bg-whatsapp-light text-gray-800 font-medium px-3 py-1 rounded-full transition duration-150">
+                            I'll get back to you
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 mt-6">
+                    <button 
+                        id="send-button" 
+                        class="flex-1 bg-whatsapp-primary hover:bg-whatsapp-dark text-white font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
+                        onclick="sendMessage()">
+                        <i class="fas fa-paper-plane mr-2"></i> Send Message
+                    </button>
+                    <button 
+                        id="copy-link-button" 
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-5 rounded-lg transition duration-150 flex items-center justify-center"
+                        onclick="copyLink()">
+                        <i class="fas fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+                
+                <!-- Error Message -->
+                <p id="error-message" class="text-red-500 text-sm mt-2 text-center"></p>
+                <p id="success-message" class="text-green-600 text-sm mt-2 text-center"></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-whatsapp-primary text-white p-4 text-center text-sm">
+        <p>Made with <i class="fas fa-heart text-red-500"></i> by Anish</p>
     </footer>
 
     <script>
+        // Function to send WhatsApp message
         function sendMessage() {
-            const phoneNumber = document.getElementById('phone-number').value;
-            const message = document.getElementById('message').value;
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const message = document.getElementById('message').value.trim();
             const errorMessage = document.getElementById('error-message');
-            if (phoneNumber.length >= 7) {
-                const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
-                errorMessage.textContent = '';
-            } else {
-                errorMessage.textContent = 'Please enter a phone number with at least 7 digits';
+            const successMessage = document.getElementById('success-message');
+            
+            // Reset messages
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+            
+            // Validate phone number
+            if (phoneNumber.length === 0) {
+                errorMessage.textContent = 'Please enter a phone number';
+                return;
             }
+            
+            if (phoneNumber.length < 7) {
+                errorMessage.textContent = 'Phone number must be at least 7 digits';
+                return;
+            }
+            
+            // Create WhatsApp URL
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Open WhatsApp in a new tab
+            window.open(url, '_blank');
+            
+            // Show success message
+            successMessage.textContent = 'Opening WhatsApp...';
+            
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+                successMessage.textContent = '';
+            }, 3000);
         }
+        
+        // Function to copy link to clipboard
+        function copyLink() {
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            // Reset messages
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+            
+            // Validate phone number
+            if (phoneNumber.length === 0) {
+                errorMessage.textContent = 'Please enter a phone number';
+                return;
+            }
+            
+            if (phoneNumber.length < 7) {
+                errorMessage.textContent = 'Phone number must be at least 7 digits';
+                return;
+            }
+            
+            // Create WhatsApp URL
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(url).then(() => {
+                successMessage.textContent = 'Link copied to clipboard!';
+                
+                // Clear success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.textContent = '';
+                }, 3000);
+            }).catch(err => {
+                errorMessage.textContent = 'Failed to copy link';
+                console.error('Error copying text: ', err);
+            });
+        }
+        
+        // Add event listener to preset buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('preset-btn')) {
+                const messageInput = document.getElementById('message');
+                const presetText = e.target.textContent;
+                
+                // If there's already text, add a new line
+                if (messageInput.value.trim() !== '') {
+                    messageInput.value += '\n' + presetText;
+                } else {
+                    messageInput.value = presetText;
+                }
+                
+                // Focus on the message input
+                messageInput.focus();
+            }
+        });
+        
+        // Add keyboard support for sending message (Ctrl+Enter)
+        document.getElementById('message').addEventListener('keydown', function(e) {
+            // Shift+Enter for new line, Ctrl+Enter for sending
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
